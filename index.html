@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DANZZSTR - Payment Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .payment-container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Header */
+        .payment-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .payment-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .payment-header h1 span {
+            color: #ff3e3e;
+        }
+        
+        .payment-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
+        
+        /* Order Summary */
+        .order-summary {
+            padding: 25px;
+            border-bottom: 1px solid #eee;
+            background: #fafafa;
+        }
+        
+        .summary-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            color: #666;
+        }
+        
+        .order-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .item-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .item-name span {
+            font-size: 1.2rem;
+        }
+        
+        .total-price {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px dashed #ddd;
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: #333;
+        }
+        
+        .total-price .amount {
+            color: #ff3e3e;
+        }
+        
+        /* Payment Methods */
+        .payment-methods {
+            padding: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: "💳";
+            font-size: 1.5rem;
+        }
+        
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .payment-card {
+            background: #f5f5f5;
+            border-radius: 15px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .payment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: #ff3e3e;
+            background: white;
+        }
+        
+        .payment-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .payment-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .payment-desc {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        
+        /* QRIS Section */
+        .qris-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .qris-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .qris-code {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            display: inline-block;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .qris-code span {
+            font-size: 5rem;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+        }
+        
+        .scan-info {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .copy-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .copy-btn:hover {
+            background: #ff3e3e;
+            transform: scale(1.05);
+        }
+        
+        /* Bank Transfer */
+        .bank-section {
+            margin-top: 20px;
+        }
+        
+        .bank-option {
+            background: #f5f5f5;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .bank-option:hover {
+            background: #e8e8e8;
+            transform: translateX(5px);
+        }
+        
+        .bank-logo {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .bank-details {
+            flex: 1;
+        }
+        
+        .bank-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        
+        .bank-number {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .copy-icon {
+            color: #ff3e3e;
+            font-size: 1.2rem;
+        }
+        
+        /* Footer */
+        .payment-footer {
+            padding: 20px 25px 25px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+        
+        .pay-button {
+            background: linear-gradient(135deg, #ff3e3e 0%, #cc2e2e 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            width: 100%;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 15px;
+        }
+        
+        .pay-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(255,62,62,0.3);
+        }
+        
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            color: #888;
+            font-size: 0.8rem;
+        }
+        
+        .secure-badge span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 300px;
+            animation: modalPop 0.3s ease;
+        }
+        
+        @keyframes modalPop {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .modal-text {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .modal-button {
+            background: #ff3e3e;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+        
+        .modal-button:hover {
+            background: #cc2e2e;
+        }
+        
+        @media (max-width: 480px) {
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <!-- Header -->
+        <div class="payment-header">
+            <div class="close-btn" onclick="closePayment()">✕</div>
+            <h1>DANZZ<span>STR</span></h1>
+            <p>Complete your payment</p>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <div class="summary-title">📋 Order Summary</div>
+            <div class="order-item">
+                <div class="item-name">
+                    <span>👕</span> Oversized Tee Black
+                </div>
+                <div>Rp 149.000</div>
+            </div>
+            <div class="order-item">
+                <div class="item-name">
+                    <span>🧢</span> Trucker Cap
+                </div>
+                <div>Rp 89.000</div>
+            </div>
+            <div class="order-item">
+                <div class="item-name">
+                    <span>🚚</span> Shipping
+                </div>
+                <div>Free</div>
+            </div>
+            <div class="total-price">
+                <div>Total</div>
+                <div class="amount">Rp 238.000</div>
+            </div>
+        </div>
+        
+        <!-- Payment Methods -->
+        <div class="payment-methods">
+            <div class="section-title">Pilih Metode Pembayaran</div>
+            
+            <!-- E-Wallet Grid (LANGSUNG KE APPS) -->
+            <div class="payment-grid">
+                <!-- DANA -->
+                <a href="intent://pay#Intent;package=id.dana;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end" class="payment-card" onclick="openApp('dana')">
+                    <div class="payment-icon">💙</div>
+                    <div class="payment-name">DANA</div>
+                    <div class="payment-desc">Instant</div>
+                </a>
+                
+                <!-- OVO -->
+                <a href="ovo://" class="payment-card" onclick="openApp('ovo')">
+                    <div class="payment-icon">💜</div>
+                    <div class="payment-name">OVO</div>
+                    <div class="payment-desc">Points +</div>
+                </a>
+                
+                <!-- GoPay -->
+                <a href="gopay://" class="payment-card" onclick="openApp('gopay')">
+                    <div class="payment-icon">💚</div>
+                    <div class="payment-name">GoPay</div>
+                    <div class="payment-desc">Paylater</div>
+                </a>
+                
+                <!-- ShopeePay -->
+                <a href="shopeepay://" class="payment-card" onclick="openApp('shopeepay')">
+                    <div class="payment-icon">🟠</div>
+                    <div class="payment-name">ShopeePay</div>
+                    <div class="payment-desc">Spaylater</div>
+                </a>
+                
+                <!-- LinkAja -->
+                <a href="linkaja://" class="payment-card" onclick="openApp('linkaja')">
+                    <div class="payment-icon">🔵</div>
+                    <div class="payment-name">LinkAja</div>
+                    <div class="payment-desc">Kirim</div>
+                </a>
+                
+                <!-- QRIS -->
+                <a href="#" class="payment-card" onclick="showQRIS()">
+                    <div class="payment-icon">⬛</div>
+                    <div class="payment-name">QRIS</div>
+                    <div class="payment-desc">Semua Apps</div>
+                </a>
+            </div>
+            
+            <!-- QRIS Section (Muncul pas diklik) -->
+            <div class="qris-section" id="qrisSection" style="display: none;">
+                <div class="qris-title">Scan QRIS dengan Aplikasi</div>
+                <div class="qris-code">
+                    <span>⬛🔳◼️</span>
+                </div>
+                <div class="scan-info">Scan pake DANA/OVO/GoPay/ShopeePay</div>
+                <button class="copy-btn" onclick="copyQR()">
+                    <span>📋</span> Copy Kode QR
+                </button>
+                <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">
+                    Atau klik aplikasi di bawah:
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+                    <span style="font-size: 2rem; cursor: pointer;" onclick="openApp('dana')">💙</span>
+                    <span style="font-size: 2rem; cursor: pointer;" onclick="openApp('ovo')">💜</span>
+                    <span style="font-size: 2rem; cursor: pointer;" onclick="openApp('gopay')">💚</span>
+                </div>
+            </div>
+            
+            <!-- Bank Transfer -->
+            <div class="bank-section">
+                <div style="margin: 20px 0 10px; color: #888; text-align: center;">- Atau Transfer Bank -</div>
+                
+                <div class="bank-option" onclick="copyBank('bca')">
+                    <div class="bank-logo" style="color: #0066AE;">BCA</div>
+                    <div class="bank-details">
+                        <div class="bank-name">Bank BCA</div>
+                        <div class="bank-number">5271 1234 5678</div>
+                    </div>
+                    <div class="copy-icon">📋</div>
+                </div>
+                
+                <div class="bank-option" onclick="copyBank('mandiri')">
+                    <div class="bank-logo" style="color: #004a7c;">MANDIRI</div>
+                    <div class="bank-details">
+                        <div class="bank-name">Bank Mandiri</div>
+                        <div class="bank-number">124-00-12345678-9</div>
+                    </div>
+                    <div class="copy-icon">📋</div>
+                </div>
+                
+                <div class="bank-option" onclick="copyBank('bni')">
+                    <div class="bank-logo" style="color: #e44c2b;">BNI</div>
+                    <div class="bank-details">
+                        <div class="bank-name">Bank BNI</div>
+                        <div class="bank-number">0812345678</div>
+                    </div>
+                    <div class="copy-icon">📋</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="payment-footer">
+            <button class="pay-button" onclick="processPayment()">
+                BAYAR SEKARANG 🔥
+            </button>
+            <div class="secure-badge">
+                <span>🔒 256-bit Secure</span>
+                <span>✅ Verified</span>
+                <span>🛡️ Protected</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">✅</div>
+            <div class="modal-title">Berhasil!</div>
+            <div class="modal-text">Pembayaran sedang diproses</div>
+            <button class="modal-button" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+    
+    <script>
+        // Fungsi buat buka aplikasi
+        function openApp(app) {
+            let url = '';
+            let appName = '';
+            
+            switch(app) {
+                case 'dana':
+                    url = 'intent://pay#Intent;package=id.dana;action=android.intent.action.VIEW;end';
+                    appName = 'DANA';
+                    break;
+                case 'ovo':
+                    url = 'ovo://';
+                    appName = 'OVO';
+                    break;
+                case 'gopay':
+                    url = 'gopay://';
+                    appName = 'GoPay';
+                    break;
+                case 'shopeepay':
+                    url = 'shopeepay://';
+                    appName = 'ShopeePay';
+                    break;
+                case 'linkaja':
+                    url = 'linkaja://';
+                    appName = 'LinkAja';
+                    break;
+                default:
+                    alert('Aplikasi tidak dikenal 😅');
+                    return;
+            }
+            
+            // Coba buka aplikasi
+            window.location.href = url;
+            
+            // Kalo gagal (aplikasi gak terinstall), kasih notifikasi
+            setTimeout(function() {
+                if (confirm('Aplikasi ' + appName + ' tidak terdeteksi.\nMau download sekarang?')) {
+                    // Redirect ke Play Store
+                    let playStoreUrl = '';
+                    switch(app) {
+                        case 'dana':
+                            playStoreUrl = 'https://play.google.com/store/apps/details?id=id.dana';
+                            break;
+                        case 'ovo':
+                            playStoreUrl = 'https://play.google.com/store/apps/details?id=com.ovo.id';
+                            break;
+                        case 'gopay':
+                            playStoreUrl = 'https://play.google.com/store/apps/details?id=com.gojek.app';
+                            break;
+                        case 'shopeepay':
+                            playStoreUrl = 'https://play.google.com/store/apps/details?id=com.shopee.id';
+                            break;
+                        case 'linkaja':
+                            playStoreUrl = 'https://play.google.com/store/apps/details?id=com.linkaja.android';
+                            break;
+                    }
+                    window.location.href = playStoreUrl;
+                }
+            }, 500);
+            
+            // Kasih efek
+            showModal();
+        }
+        
+    
